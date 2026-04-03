@@ -1,16 +1,21 @@
 "use client";
+import dynamic from "next/dynamic";
+
+const StarField = dynamic(() => import("@/components/StarField"), {
+  ssr: false,
+});
 
 export default function Home() {
   return (
     <>
-      {/* Nebula background blobs */}
+      <StarField />
+
       <div className="nebula-bg">
         <div className="blob blob-1" />
         <div className="blob blob-2" />
         <div className="blob blob-3" />
       </div>
 
-      {/* Main content */}
       <div className="relative z-10">
         <main className="min-h-screen flex items-center justify-center">
           <div className="text-center">
