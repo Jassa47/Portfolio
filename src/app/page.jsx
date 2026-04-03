@@ -2,6 +2,7 @@
 import dynamic from "next/dynamic";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import About from "@/components/About";
 
 const StarField = dynamic(() => import("@/components/StarField"), {
   ssr: false,
@@ -26,6 +27,7 @@ export default function Home() {
         <Navbar />
         <main>
           <Hero />
+          <About />
         </main>
       </div>
     </>
