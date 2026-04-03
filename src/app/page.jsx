@@ -1,12 +1,14 @@
-import { getGitHubStats, getGitHubRepos } from "@/lib/github";
+import { getGitHubStats, getAllPublicRepos } from "@/lib/github";
 import HomeContent from "@/components/HomeContent";
-import { projects } from "@/data/portfolio";
+import { projects as manualProjects, excludeRepos } from "@/data/portfolio";
 
 export const revalidate = 86400;
 
+const colorOptions = ["purple", "blue", "teal", "coral"];
+
 export default async function Home() {
   let githubStats = null;
-  let enrichedProjects = projects;
+  let mergedProjects = manualProjects;
 
   try {
     githubStats = await getGitHubStats();
@@ -15,25 +17,13 @@ export default async function Home() {
   }
 
   try {
-    const repoNames = projects
-      .filter((p) => p.github)
-      .map((p) => {
-        const parts = p.github.replace("https://github.com/", "").split("/");
-        return parts[1];
-      })
-      .filter(Boolean);
+    const allRepos = await getAllPublicRepos();
 
-    const repoData = await getGitHubRepos(repoNames);
+    const enriched = manualProjects.map((project) => {
+      if (!project.repoName) return project;
 
-    enrichedProjects = projects.map((project) => {
-      if (!project.github) return project;
-
-      const repoName = project.github
-        .replace("https://github.com/", "")
-        .split("/")[1];
-
-      const repo = repoData.find(
-        (r) => r.name.toLowerCase() === repoName.toLowerCase()
+      const repo = allRepos.find(
+        (r) => r.name.toLowerCase() === project.repoName.toLowerCase()
       );
 
       if (!repo) return project;
@@ -46,11 +36,43 @@ export default async function Home() {
         live: project.live || repo.homepage,
       };
     });
+
+    const manualRepoNames = manualProjects
+      .filter((p) => p.repoName)
+      .map((p) => p.repoName.toLowerCase());
+
+    const excludeList = excludeRepos.map((r) => r.toLowerCase());
+
+    const newRepos = allRepos
+      .filter((repo) => {
+        const nameLower = repo.name.toLowerCase();
+        return (
+          !manualRepoNames.includes(nameLower) &&
+          !excludeList.includes(nameLower) &&
+          repo.description
+        );
+      })
+      .map((repo, i) => ({
+        repoName: repo.name,
+        title: repo.name,
+        subtitle: repo.topics.length > 0 ? repo.topics[0].toUpperCase() : "PROJECT",
+        description: repo.description,
+        tech: repo.languages.slice(0, 4).map((l) => l.name),
+        github: repo.url,
+        live: repo.homepage,
+        featured: false,
+        color: colorOptions[i % colorOptions.length],
+        stats: null,
+        languages: repo.languages,
+        stars: repo.stars,
+        lastUpdated: repo.lastUpdated,
+      }));
+    mergedProjects = [...enriched, ...newRepos];
   } catch (err) {
-    console.error("Failed to fetch GitHub repos:", err);
+    console.error("Failed to fetch repos:", err);
   }
 
   return (
-    <HomeContent githubStats={githubStats} projects={enrichedProjects} />
+    <HomeContent githubStats={githubStats} projects={mergedProjects} />
   );
 }

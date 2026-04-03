@@ -1,6 +1,6 @@
 export const personalInfo = {
   name: "Akaaljot Singh Mathoda",
-  initials: "AM",
+  initials: "ASM",
   title: "Full-Stack Developer & AI Enthusiast",
   tagline: "Building things at the intersection of AI and full-stack engineering",
   location: "Vancouver, BC",
@@ -50,8 +50,15 @@ export const techStack = {
   ],
 };
 
+export const excludeRepos = [
+  // Add repo names you want to hide, e.g.:
+  // "old-test-project",
+  // "forked-repo",
+];
+
 export const projects = [
   {
+    repoName: "StudySage",
     title: "StudySage",
     subtitle: "Android App",
     description:
@@ -64,6 +71,7 @@ export const projects = [
     stats: { screens: "30+", latency: "<50ms", threads: "90" },
   },
   {
+    repoName: null,
     title: "DermaScan AI",
     subtitle: "Deep Learning",
     description:
@@ -72,10 +80,11 @@ export const projects = [
     github: null,
     live: null,
     featured: true,
-    color: "blue",
-    stats: { accuracy: "90%+", images: "500+", improvement: "20%" },
+    color: "purple",
+    stats: { accuracy: "90%+", images: "10000+", improvement: "20%" },
   },
   {
+    repoName: "StudySage-Website",
     title: "StudySage Website",
     subtitle: "Web App",
     description:
@@ -88,6 +97,7 @@ export const projects = [
     stats: { performance: "+30%", apis: "REST", deploy: "Vercel" },
   },
   {
+    repoName: "rizzervit",
     title: "RizzervIT",
     subtitle: "Booking Platform",
     description:
@@ -100,18 +110,29 @@ export const projects = [
     stats: { endpoints: "20+", tests: "10+", defects: "-25%" },
   },
 ];
-
 export const experience = [
   {
     role: "Software Development Intern",
     company: "Golden Globe Education & Migration Consultants",
-    location: "Mohali, India",
+    location: "Mohali, Punjab, India",
     period: "May 2024 — July 2024",
     bullets: [
       "Developed 5+ user-facing features using HTML, CSS, and JavaScript",
       "Refactored codebase reducing page load time by ~20% and improving scalability",
       "Integrated REST APIs for dynamic data flow between frontend and backend",
       "Authored unit tests to validate feature correctness and workflow reliability",
+    ],
+  },
+  {
+    role: "Front Desk Associate",
+    company: "SFU Dining Commons",
+    location: "Burnaby, BC, Canada",
+    period: "Sept 2023 — Present",
+    bullets: [
+      "Collaborated with cross-functional teams in a fast-paced, reliability-critical environment",
+      "Analyzed prep-time and peak-hour data to improve workflow coordination, reducing average wait times by 12%",
+      "Communicated clearly with team members to coordinate tasks and resolve issues",
+      "Adapted quickly to changing priorities while maintaining service quality",
     ],
   },
 ];
@@ -141,11 +162,4 @@ export const certifications = [
     year: "2026",
     description: "Hands-on experience with Docker images, containers, volumes, and networking",
   },
-];
-
-export const stats = [
-  { label: "Projects Built", value: 4, suffix: "+" },
-  { label: "CGPA", value: 3.46, suffix: "", decimals: 2 },
-  { label: "Dean's List", value: 2, suffix: "×" },
-  { label: "API Endpoints", value: 20, suffix: "+" },
 ];

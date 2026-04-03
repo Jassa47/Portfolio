@@ -211,3 +211,71 @@ export async function getGitHubRepos(repoNames) {
     return [];
   }
 }
+// ─── Fetch ALL public repos ───
+export async function getAllPublicRepos() {
+  try {
+    let allRepos = [];
+    let page = 1;
+    let hasMore = true;
+
+    while (hasMore) {
+      const res = await fetch(
+        `${REST_URL}/users/${GITHUB_USERNAME}/repos?per_page=100&page=${page}&sort=updated`,
+        { headers: getHeaders() }
+      );
+
+      if (!res.ok) break;
+
+      const repos = await res.json();
+      if (repos.length === 0) {
+        hasMore = false;
+      } else {
+        allRepos = allRepos.concat(repos);
+        page++;
+      }
+    }
+
+    const results = [];
+
+    for (const repo of allRepos) {
+      if (repo.fork) continue;
+
+      let languages = [];
+      try {
+        const langRes = await fetch(
+          `${REST_URL}/repos/${GITHUB_USERNAME}/${repo.name}/languages`,
+          { headers: getHeaders() }
+        );
+        if (langRes.ok) {
+          const langData = await langRes.json();
+          const totalBytes = Object.values(langData).reduce((a, b) => a + b, 0);
+          if (totalBytes > 0) {
+            languages = Object.entries(langData).map(([lang, bytes]) => ({
+              name: lang,
+              percentage: Math.round((bytes / totalBytes) * 100),
+            }));
+          }
+        }
+      } catch (err) {
+        // skip language fetch errors
+      }
+
+      results.push({
+        name: repo.name,
+        description: repo.description || "",
+        url: repo.html_url,
+        homepage: repo.homepage || null,
+        stars: repo.stargazers_count,
+        forks: repo.forks_count,
+        lastUpdated: repo.updated_at,
+        languages: languages,
+        topics: repo.topics || [],
+      });
+    }
+
+    return results;
+  } catch (err) {
+    console.error("Failed to fetch all repos:", err);
+    return [];
+  }
+}
