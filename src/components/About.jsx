@@ -3,10 +3,10 @@ import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import SectionReveal from "./SectionReveal";
-import { about, techStack, stats } from "@/data/portfolio";
+import { about, techStack } from "@/data/portfolio";
 import { useCounter } from "@/hooks/useCounter";
 
-function StatCard({ label, value, suffix, decimals = 0, delay = 0 }) {
+function StatCard({ label, value, suffix, decimals = 0, delay = 0}) {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.5 });
   const { count, start } = useCounter(value, 2000, decimals);
 
@@ -72,7 +72,23 @@ function TechCategory({ title, items, delay = 0 }) {
   );
 }
 
-export default function About() {
+export default function About({ githubStats }) {
+    const fallbackStats = [
+        { label: "Projects Built", value: 4, suffix: "" },
+        { label: "Contributions", value: 0, suffix: "" },
+        { label: "Current Streak", value: 0, suffix: "" },
+        { label: "Max Streak", value: 0, suffix: "" },
+  ];
+
+  const stats = githubStats
+    ? [
+        { label: "Repositories", value: githubStats.repos, suffix: "" },
+        { label: "Contributions", value: githubStats.contributions, suffix: "" },
+        { label: "Current Streak", value: githubStats.currentStreak, suffix: "" },
+        { label: "Max Streak", value: githubStats.maxStreak, suffix: "" },
+      ]
+    : fallbackStats;
+
   return (
     <section id="about" className="relative py-32 px-6">
       <div className="max-w-6xl mx-auto">
@@ -111,6 +127,15 @@ export default function About() {
             ))}
           </div>
         </div>
+
+        {githubStats && githubStats.fetchedAt && (
+          <p
+            className="text-xs font-mono mb-8 opacity-40"
+            style={{ color: "var(--text-muted)" }}
+          >
+            Stats updated {new Date(githubStats.fetchedAt).toLocaleDateString()}
+          </p>
+        )}
 
         <SectionReveal delay={0.2}>
           <h3
