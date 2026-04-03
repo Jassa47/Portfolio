@@ -1,6 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import Navbar from "@/components/Navbar";
+import Hero from "@/components/Hero";
 
 const StarField = dynamic(() => import("@/components/StarField"), {
   ssr: false,
@@ -23,21 +24,8 @@ export default function Home() {
 
       <div className="relative z-10">
         <Navbar />
-        <main className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <h1
-              className="font-display text-5xl font-bold mb-4 text-glow"
-              style={{ color: "var(--star-white)" }}
-            >
-              Akaaljot Singh Mathoda
-            </h1>
-            <p
-              className="font-mono text-sm"
-              style={{ color: "var(--text-muted)" }}
-            >
-              Portfolio coming to life — one commit at a time...
-            </p>
-          </div>
+        <main>
+          <Hero />
         </main>
       </div>
     </>
