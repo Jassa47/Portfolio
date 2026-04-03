@@ -67,7 +67,7 @@ export default function ProjectCard({ project, index, featured = false }) {
   return (
     <motion.div
       ref={cardRef}
-      className={`relative group ${featured ? "md:col-span-2 md:row-span-2" : ""}`}
+      className="relative group"
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -156,12 +156,19 @@ export default function ProjectCard({ project, index, featured = false }) {
             </div>
           )}
 
-          <div className="flex flex-wrap gap-2 mt-auto">
-            {project.tech.map((t) => (
-              <span key={t} className="tech-pill" style={{ fontSize: "11px" }}>
-                {t}
-              </span>
-            ))}
+                   <div className="flex flex-wrap gap-2 mt-auto">
+            {project.languages && project.languages.length > 0
+              ? project.languages.map((lang) => (
+                  <span key={lang.name} className="tech-pill" style={{ fontSize: "11px" }}>
+                    {lang.name} {lang.percentage}%
+                  </span>
+                ))
+              : project.tech.map((t) => (
+                  <span key={t} className="tech-pill" style={{ fontSize: "11px" }}>
+                    {t}
+                  </span>
+                ))
+            }
           </div>
         </div>
       </motion.div>

@@ -1,11 +1,12 @@
 "use client";
 import SectionReveal from "./SectionReveal";
 import ProjectCard from "./ProjectCard";
-import { projects } from "@/data/portfolio";
+import { projects as fallbackProjects } from "@/data/portfolio";
 
-export default function Projects() {
-  const featured = projects.filter((p) => p.featured);
-  const other = projects.filter((p) => !p.featured);
+export default function Projects({ projects }) {
+  const projectList = projects || fallbackProjects;
+  const featured = projectList.filter((p) => p.featured);
+  const other = projectList.filter((p) => !p.featured);
 
   return (
     <section id="projects" className="relative py-32 px-6">
@@ -34,7 +35,7 @@ export default function Projects() {
           </p>
         </SectionReveal>
 
-        <div className="grid md:grid-cols-4 gap-4">
+        <div className="grid md:grid-cols-2 gap-4">
           {featured.map((project, i) => (
             <ProjectCard key={project.title} project={project} index={i} featured />
           ))}

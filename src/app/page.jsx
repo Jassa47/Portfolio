@@ -1,43 +1,56 @@
-"use client";
-import dynamic from "next/dynamic";
-import Navbar from "@/components/Navbar";
-import Hero from "@/components/Hero";
-import About from "@/components/About";
-import Projects from "@/components/Projects";
-import Experience from "@/components/Experience";
-import Contact from "@/components/Contact";
-import Footer from "@/components/Footer";
+import { getGitHubStats, getGitHubRepos } from "@/lib/github";
+import HomeContent from "@/components/HomeContent";
+import { projects } from "@/data/portfolio";
 
-const StarField = dynamic(() => import("@/components/StarField"), {
-  ssr: false,
-});
-const CustomCursor = dynamic(() => import("@/components/CustomCursor"), {
-  ssr: false,
-});
+export const revalidate = 86400;
 
-export default function Home() {
+export default async function Home() {
+  let githubStats = null;
+  let enrichedProjects = projects;
+
+  try {
+    githubStats = await getGitHubStats();
+  } catch (err) {
+    console.error("Failed to fetch GitHub stats:", err);
+  }
+
+  try {
+    const repoNames = projects
+      .filter((p) => p.github)
+      .map((p) => {
+        const parts = p.github.replace("https://github.com/", "").split("/");
+        return parts[1];
+      })
+      .filter(Boolean);
+
+    const repoData = await getGitHubRepos(repoNames);
+
+    enrichedProjects = projects.map((project) => {
+      if (!project.github) return project;
+
+      const repoName = project.github
+        .replace("https://github.com/", "")
+        .split("/")[1];
+
+      const repo = repoData.find(
+        (r) => r.name.toLowerCase() === repoName.toLowerCase()
+      );
+
+      if (!repo) return project;
+
+      return {
+        ...project,
+        languages: repo.languages,
+        stars: repo.stars,
+        lastUpdated: repo.lastUpdated,
+        live: project.live || repo.homepage,
+      };
+    });
+  } catch (err) {
+    console.error("Failed to fetch GitHub repos:", err);
+  }
+
   return (
-    <>
-      <StarField />
-      <CustomCursor />
-
-      <div className="nebula-bg">
-        <div className="blob blob-1" />
-        <div className="blob blob-2" />
-        <div className="blob blob-3" />
-      </div>
-
-      <div className="relative z-10">
-        <Navbar />
-        <main>
-          <Hero />
-          <About />
-          <Projects />
-          <Experience />
-          <Contact />
-        </main>
-        <Footer />
-      </div>
-    </>
+    <HomeContent githubStats={githubStats} projects={enrichedProjects} />
   );
 }
