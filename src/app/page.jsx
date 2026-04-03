@@ -1,5 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
+import Navbar from "@/components/Navbar";
 
 const StarField = dynamic(() => import("@/components/StarField"), {
   ssr: false,
@@ -21,6 +22,7 @@ export default function Home() {
       </div>
 
       <div className="relative z-10">
+        <Navbar />
         <main className="min-h-screen flex items-center justify-center">
           <div className="text-center">
             <h1
