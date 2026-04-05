@@ -4,6 +4,13 @@ export const metadata = {
   title: "Akaaljot Singh Mathoda — Portfolio",
   description:
     "Full-stack developer & AI enthusiast. Building at the intersection of AI and software engineering. SFU Computing Science.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/icon.png",
+  },
   keywords: [
     "Akaaljot Singh Mathoda",
     "portfolio",
