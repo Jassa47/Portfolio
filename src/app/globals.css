@@ -184,8 +184,19 @@ body {
 
 @media (max-width: 767px) {
   .nebula-bg .blob {
-    filter: blur(80px);
-    opacity: 0.05;
+    display: none;
+  }
+
+  .gradient-border::before {
+    display: none;
+  }
+
+  .noise-overlay::after {
+    display: none;
+  }
+
+  .text-glow {
+    text-shadow: none;
   }
 }
 .nebula-bg .blob-1 {
