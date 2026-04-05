@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
@@ -88,16 +88,23 @@ function ShootingStar() {
 }
 
 export default function StarField() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+  }, []);
+
   return (
     <div className="fixed inset-0 z-0" style={{ pointerEvents: "none" }}>
       <Canvas
         camera={{ position: [0, 0, 20], fov: 75 }}
-        dpr={[1, 1.5]}
+        dpr={[1, isMobile ? 1 : 1.5]}
         style={{ background: "transparent" }}
+        frameloop={isMobile ? "demand" : "always"}
       >
         <ambientLight intensity={0.1} />
-        <Stars count={2500} />
-        {[...Array(3)].map((_, i) => (
+        <Stars count={isMobile ? 800 : 2500} />
+        {!isMobile && [...Array(3)].map((_, i) => (
           <ShootingStar key={i} />
         ))}
       </Canvas>

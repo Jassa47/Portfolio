@@ -51,9 +51,14 @@ body {
   .glass-card {
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
     border-radius: 16px;
+  }
+
+  @media (min-width: 768px) {
+    .glass-card {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
   }
   .glass-card:hover { border-color: var(--border-hover); }
 
@@ -175,6 +180,13 @@ body {
   border-radius: 50%;
   filter: blur(120px);
   opacity: 0.08;
+}
+
+@media (max-width: 767px) {
+  .nebula-bg .blob {
+    filter: blur(80px);
+    opacity: 0.05;
+  }
 }
 .nebula-bg .blob-1 {
   width: 600px; height: 600px;
