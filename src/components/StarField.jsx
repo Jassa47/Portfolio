@@ -87,27 +87,67 @@ function ShootingStar() {
   );
 }
 
-export default function StarField() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    setIsMobile(window.innerWidth < 768);
-  }, []);
-
+function DesktopStarField() {
   return (
     <div className="fixed inset-0 z-0" style={{ pointerEvents: "none" }}>
       <Canvas
         camera={{ position: [0, 0, 20], fov: 75 }}
-        dpr={[1, isMobile ? 1 : 1.5]}
+        dpr={[1, 1.5]}
         style={{ background: "transparent" }}
-        frameloop={isMobile ? "demand" : "always"}
       >
         <ambientLight intensity={0.1} />
-        <Stars count={isMobile ? 800 : 2500} />
-        {!isMobile && [...Array(3)].map((_, i) => (
+        <Stars count={2500} />
+        {[...Array(3)].map((_, i) => (
           <ShootingStar key={i} />
         ))}
       </Canvas>
     </div>
   );
+}
+
+function MobileStarField() {
+  const stars = useMemo(() => {
+    return [...Array(100)].map((_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      size: Math.random() * 2 + 0.5,
+      delay: Math.random() * 5,
+      duration: Math.random() * 3 + 2,
+    }));
+  }, []);
+
+  return (
+    <div className="fixed inset-0 z-0" style={{ pointerEvents: "none" }}>
+      {stars.map((star) => (
+        <div
+          key={star.id}
+          className="absolute rounded-full"
+          style={{
+            left: `${star.left}%`,
+            top: `${star.top}%`,
+            width: star.size,
+            height: star.size,
+            background: "#E2E8F0",
+            opacity: 0,
+            animation: `twinkle ${star.duration}s ease-in-out ${star.delay}s infinite`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+export default function StarField() {
+  const [isMobile, setIsMobile] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  return isMobile ? <MobileStarField /> : <DesktopStarField />;
 }
